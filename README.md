@@ -40,6 +40,7 @@ When using the `asLambdaHandler` helper it's automatically wires error handling 
 This will automatically catch any unexpected error thrown in the handler and normalize it as 500 HTTP response.
 
 Additionally, it will catch any error extending `HttpError` and normalize it as HTTP response.
+The following errors are available out of the box:
 
 ### `BadRequest` - 400
   
@@ -74,3 +75,16 @@ Might happen when there is a throttling policy applied.
 > Note that the response error will expose stack traces unless explicitly setting `NODE_ENV` to `'production'`.
 > Make sure to add the `NODE_ENV` environment variable in production to prevent leakage of the server internals with stack traces.
 
+Usage Example:
+
+```typescript
+import asLambdaHandler, { NotFound } from '@ori-sh/lambda-api';
+
+export const handler = asLambdaHandler(async request => {
+  const item = queryItemFromDatabase(request.pathParams.id);
+  // If no item found in the database a 404 status HTTP response will be returned. 
+  if (item === null || item === undefined)
+    throw new NotFound(`No item with the id "${request.pathParams.id}"`)
+  return item;
+});
+```

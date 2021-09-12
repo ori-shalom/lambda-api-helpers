@@ -13,8 +13,7 @@ export type HttpRequest = {
   pathParams: HttpPathParams
   headers: HttpHeaders
 }
-export type SimpleHandler = (request: HttpRequest) => Promise<HttpBody | void>;
-export type MethodHandlers = Partial<Record<HttpMethod, SimpleHandler>>;
+export type Api = (request: HttpRequest) => Promise<HttpBody | void>;
 
 
 export function isHttpMethod(method: unknown): method is HttpMethod {
