@@ -9,10 +9,19 @@ export default function asLambdaHandler(api: Api): APIGatewayProxyHandlerV2 {
   return async (event: APIGatewayProxyEventV2) => {
     return api({
       method: assertHttpMethod(event.requestContext.http.method),
-      body: event.body ? JSON.parse(event.body) : undefined,
+      body: parseRequest(event.body),
       queryParams: event.queryStringParameters ?? {},
       pathParams: event.pathParameters ?? {},
       headers: event.headers
     }).then(success).catch(catchError);
+  }
+}
+
+function parseRequest(body: any) {
+  if (body === undefined || body === null) return undefined;
+  try {
+    return JSON.parse(body);
+  } catch (e) {
+    return body;
   }
 }
